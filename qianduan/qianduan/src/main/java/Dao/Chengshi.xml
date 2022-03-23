@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Dao.Chengshi">
+    <select id="select" resultType="JavaBean.Chengshi">
+        select * from chengshi;
+    </select>
+    <insert id="add">
+        insert into chengshi values (#{id},#{name},#{no});
+    </insert>
+    <delete id="delete">
+        delete from chengshi where id=#{c}
+    </delete>
+    <update id="update">
+        update chengshi set name=#{name},no=#{no} where id=#{id}
+    </update>
+    <select id="selectTotalCount" resultType="int">
+        select count(*) from chengshi;
+    </select>
+    <select id="selectBypage" resultType="JavaBean.Chengshi">
+        select * from chengshi limit #{begin},#{size}
+    </select>
+    <select id="chaxun" resultType="JavaBean.Chengshi">
+        select * from chengshi
+        <where>
+            <if test="chengshi.name !=null and chengshi.name !=''">
+                 and name like #{chengshi.name}
+            </if>
+            <if test="chengshi.no !=null and chengshi.no !=''">
+                and no = #{chengshi.no}
+            </if>
+        </where>
+        limit #{begin},#{size}
+    </select>
+    <select id="countchaxun" resultType="int">
+        select count(*) from chengshi
+        <where>
+            <if test="name !=null and name !=''">
+                and name like #{name}
+            </if>
+            <if test="no !=null and no !=''">
+                and no = #{no}
+
+            </if>
+        </where>
+    </select>
+</mapper>

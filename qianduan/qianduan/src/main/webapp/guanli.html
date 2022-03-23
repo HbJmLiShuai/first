@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="element-ui/lib/index.js"></script>
+<link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+<style>
+    .el-row {
+        margin-bottom: 20px;
+    &:last-child {
+         margin-bottom: 0;
+     }
+    }
+    .el-col {
+        border-radius: 4px;
+    }
+    .el-header, .el-footer {
+        background-color: #B3C0D1;
+        color: #333;
+        text-align: center;
+        line-height: 60px;
+    }
+
+    .el-aside {
+        background-color: #D3DCE6;
+        color: #333;
+        text-align: center;
+        line-height: 200px;
+    }
+
+    .el-main {
+        background-color: #E9EEF3;
+        color: #333;
+        text-align: center;
+        line-height: 160px;
+    }
+
+    body > .el-container {
+        margin-bottom: 40px;
+    }
+
+    .el-container:nth-child(5) .el-aside,
+    .el-container:nth-child(6) .el-aside {
+        line-height: 260px;
+    }
+
+    .el-container:nth-child(7) .el-aside {
+        line-height: 320px;
+    }
+</style>
+<head>
+    <meta charset="UTF-8";content="text/html">
+    <title>Title</title>
+</head>
+<body>
+<div id="cai">
+    <el-container>
+        <el-header>员工信息</el-header>
+        <template>
+            <el-table
+                    :data="tableData"
+                    style="width: 100%"
+            >
+                <el-table-column
+                        align="center"
+                        prop="id"
+                        label="id"
+                        width="360">
+                </el-table-column>
+                <el-table-column
+                        align="center"
+                        prop="name"
+                        label="名字"
+                        width="360">
+                </el-table-column>
+                <el-table-column
+                        align="center"
+                        prop="no"
+                        label="编号">
+                </el-table-column>
+                <el-table-column
+                        align="center"
+                        label="操作">
+                    <template scope="scope"><!--获取当前行的数据所用语句-->
+                    <el-row>
+                        <el-button type="primary" @click="dialogVisible = true;xiugai(scope.row.name,scope.row.no,scope.row.id)">修改</el-button>
+                        <el-button type="danger" @click="shanchu(scope.row.id)">删除</el-button>
+                    </el-row>
+                    </template><!--在这个范围内修饰（——在column的后面定义——）-->
+                </el-table-column>
+            </el-table>
+                 <el-dialog
+                    title="修改页面"
+                    :visible.sync="dialogVisible"
+                    width="30%"
+                    :before-close="handleClose">
+                     <el-form :inline="true" :model="ruleForm1" class="demo-form-inline" ref="ruleForm1">
+                         <el-form-item label="名字">
+                             <el-input v-model="ruleForm1.name" placeholder="名字"></el-input>
+                         </el-form-item>
+                         <el-form-item label="编号">
+                             <el-input v-model="ruleForm1.no" placeholder="编号"></el-input>
+                         </el-form-item>
+                     </el-form>
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false;xiugai2()">修改</el-button>
+                </span>
+            </el-dialog>
+        </template>
+        <template>
+            <div class="block">
+                <el-pagination
+                        align="center"
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-sizes="[4,6,8]"
+                        :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="totalCount">
+                </el-pagination>
+            </div>
+        </template>
+        <br>
+        <br>
+        <el-row :gutter="20">
+            <el-col :span="12"> <el-footer>增加员工</el-footer>
+                <el-form :model="ruleForm" status-icon ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                    <el-form-item label="name" prop="name">
+                        <el-input type="text" v-model="ruleForm.name" autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="no(数字)" prop="no">
+                        <el-input v-model.number="ruleForm.no"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+                        <el-button @click="resetForm('ruleForm')">重置</el-button>
+                    </el-form-item>
+                </el-form></el-col>
+            <el-col :span="12">
+                <el-footer>查询员工</el-footer>
+                <br>
+                <br>
+                <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                    <el-form-item label="姓名">
+                        <el-input v-model="formInline.name" placeholder="姓名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="编号">
+                        <el-input v-model="formInline.no" placeholder="编号"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="onSubmit">查询</el-button>
+                    </el-form-item>
+                </el-form>
+            </el-col>
+        </el-row>
+
+        <el-footer>谢谢观看</el-footer>
+    </el-container>
+
+
+</div>
+
+</body>
+</html>
+<script type="text/javascript">
+    var a=new Vue(
+        {
+            el:"#cai",
+            mounted(){
+                //当页面加载完成后，发送异步请求，获取数据
+                this.shuaxin();
+
+            },
+            data() {
+                return {
+                    tableData:[],
+                    ruleForm: {
+                        id: '',
+                        name: '',
+                        no: ''
+                    },
+                    dialogVisible: false,
+                    ruleForm1: {
+                        id:'',
+                        name: '',
+                        no: ''
+                    },
+                    currentPage: 1,
+                    totalCount:"",
+                    pageSize:4,
+                    formInline: {
+                       name:"",
+                        no:""
+                    }
+
+
+                }
+            },
+            methods:{
+                resetForm(formName) {
+                    this.$refs[formName].resetFields();
+                },
+                submitForm(formName) {
+                    _this=this;
+                 axios.post("http://localhost:8080/qianduan/ok/add",_this.ruleForm)
+                     .then(function (c) {
+
+                        alert(c.data)
+                         _this.resetForm(formName)
+                         _this.shuaxin()
+                     })
+
+                },
+                shuaxin(){
+                    var _this=this;
+                    axios.post("http://localhost:8080/qianduan/ok/chaxun?currentPage="+_this.currentPage+"&pageSize="+_this.pageSize,_this.formInline)
+                        .then(function (s) {
+                        _this.tableData=s.data.row;
+                        _this.totalCount=s.data.totalCount;
+
+                    })
+                },
+                shanchu(no){
+                    _this=this;
+                    var b = window.confirm("确定要删除吗");
+                    if(b){
+                        axios.get("http://localhost:8080/qianduan/ok/delete?id="+no+"")
+                            .then(function (a)
+                            {
+                                alert(a.data);
+                                _this.shuaxin();
+                            })
+                    }
+
+                },
+                handleClose(done) {
+                    this.$confirm('确认关闭？')
+                        .then(_ => {
+                            done();
+                        })
+                        .catch(_ => {});
+                },
+                xiugai(a,b,c){
+                    this.ruleForm1.name=a;
+                    this.ruleForm1.no=b;
+                    this.ruleForm1.id=c;
+                },
+                xiugai2(){
+                    _this=this;
+                    axios.post("http://localhost:8080/qianduan/ok/update",_this.ruleForm1)
+                    .then(function (s) {
+                        alert(s.data)
+                        _this.shuaxin()
+
+                    })
+                },
+                handleSizeChange(val) {
+                    this.pageSize=val
+                    this.shuaxin();
+
+                },
+                handleCurrentChange(val) {
+                    this.currentPage=val;
+                    this.shuaxin();
+
+                },
+                onSubmit() {
+                 this.shuaxin();
+
+                }
+
+
+            }
+        }
+    )
+</script>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"；content="text/html">
+    <title>登录页面</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+    <style type="text/css"  >
+        .el-header, .el-footer {
+            background-color: #B3C0D1;
+            color: #333;
+            text-align: center;
+            line-height: 80px;
+        }
+
+
+        .el-main {
+            background-color: #E9EEF3;
+            color: #333;
+            text-align: center;
+            line-height: 160px;
+        }
+        .el-row {
+            margin-bottom: 20px;
+        &:last-child {
+             margin-bottom: 0;
+         }
+        }
+        .el-col {
+            border-radius: 4px;
+        }
+        .bg-purple-dark {
+            background: #99a9bf;
+        }
+        .bg-purple {
+            background: #d3dce6;
+        }
+        .bg-purple-light {
+            background: #e5e9f2;
+        }
+        .grid-content {
+            border-radius: 4px;
+            min-height: 36px;
+        }
+        .row-bg {
+            padding: 10px 0;
+            background-color: #f9fafc;
+        }
+
+    </style>
+</head>
+<body>
+<div id="cai">
+    <el-container>
+        <el-header><span style="font-size: 30px">欢迎使用该系统</span></el-header>
+        <el-main><el-row>
+            <el-col :span="16">
+                <div class="demo-image__placeholder">
+                    <div class="block">
+                        <el-image :src="src"></el-image>
+                    </div>
+                </div>
+            </el-col>
+            <el-col :span="8">
+              <form method="post" action="http://localhost:8080/qianduan/yanzheng">
+                  <div><span style="font-size: 36px">用户登录</span></div>
+                  <div>账号:<input type="text" name="username"></div>
+                  <div>密码:<input type="password" name="password"></div>
+                  <input type="submit" value="提交">
+              </form>
+            </el-col>
+        </el-row></el-main>
+        <el-footer><span style="font-size: 30px">欢迎下次使用</span></el-footer>
+    </el-container>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+    new Vue(
+        {
+            el:"#cai",
+            data() {
+                return {
+                    ruleForm2: {
+                        username: '',
+                        password: '',
+                    },
+                    src: 'https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg'
+                };
+            },
+            methods: {
+
+            }
+        }
+    )
+</script>
